@@ -1,0 +1,23 @@
+# Streamlit UI
+streamlit
+
+# Financial Data Fetching
+requests
+beautifulsoup4
+
+# Embedding Model for Vector Storage
+sentence-transformers
+
+# Vector Database (for RAG-based Retrieval)
+faiss-cpu
+chromadb
+
+# Hugging Face Integration (for AI Model)
+transformers
+huggingface-hub
+
+# LLM Model (Google FLAN-T5 or other Open-Source Models)
+torch
+
+# Deployment & Utility
+python-dotenv  # For handling API keys securely
