@@ -1,13 +1,16 @@
 import requests
+import os
 from bs4 import BeautifulSoup
 import warnings
+from preprocessing import preprocess_file
+from vector_store import store_embeddings
 warnings.filterwarnings("ignore")
 
 headers = {
     "User-Agent": "sakshi sakshi@gmail.com"
     }
 
-def fetch_filing_text(cik, accession_number, primary_doc):
+def fetch_filing_text(cik, accession_number, primary_doc, company_name, report_type):
     """
     Given a company's CIK, filing accession number, and primary document name,
     fetch and return the full filing text.
@@ -20,20 +23,31 @@ def fetch_filing_text(cik, accession_number, primary_doc):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, "lxml")
         filing_text = soup.get_text(separator="\n")
-        return filing_text
+
+        # Generate file name
+        filename = f"data/{company_name}_{report_type}.txt"
+        chunks_filepath = f"data/{company_name}_{report_type}_chunks.json"
+
+
+        # Save as text file
+        if os.path.exists(filename):
+            print(f"File already exists: {filename}")
+        else:
+            # Save the file
+            with open(filename, "w", encoding="utf-8") as f:
+                f.write(filing_text)
+            preprocess_file(filename, chunks_filepath)
+            print(f"Raw and chunks file saved for: {company_name}")
+            store_embeddings(company_name, report_type)
+            print(f"Embeddings stored for: {company_name}")
     else:
         print(f"Error fetching filing text: {response.status_code}")
-        return ""
 
-# Example: Apple ke 10-K filing ka text extract karna
+# # Example: Apple ke 10-K filing 
 cik = "0000320193"
 accession_number = "000032019323000106"
 primary_doc = "aapl-20230930"
+company_name = "Apple"
+report_type = "10-K"
 
-filing_text = fetch_filing_text(cik, accession_number, primary_doc)
-
-# Save as text file
-with open("data/apple_10k.txt", "w", encoding="utf-8") as f:
-    f.write(filing_text)
-
-print("Apple 10-K filing text saved!")
+filing_text = fetch_filing_text(cik, accession_number, primary_doc, company_name, report_type)
