@@ -17,7 +17,13 @@ transformers
 huggingface-hub
 
 # LLM Model (Google FLAN-T5 or other Open-Source Models)
-torch
+sec_edgar_downloader
+langchain.text_splitter
+langchain.embeddings
+langchain.vectorstores
+langchain.llms
+langchain.chains
+utils
 
 # Deployment & Utility
 python-dotenv  # For handling API keys securely

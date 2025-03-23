@@ -29,6 +29,22 @@ def check_file(company_name, report_type):
     else:
         print(f"❌ Failed to process data for {company_name}.")
         return False
+    
+def process_results(results):
+    """Process raw chunks to extract meaningful, readable insights"""
+    processed_results = []
+    for result in results:
+        # Example of extracting financial data from the chunk
+        # Here you can add logic to detect financial numbers, like revenue, growth rates, etc.
+        if "revenue growth" in result.lower():
+            processed_results.append(result)  # You could extract the percentage growth here
+        elif "profit" in result.lower():
+            processed_results.append(result)  # Extract profit figures if relevant
+        else:
+            # You could refine this by applying more complex text parsing for numbers, percentages, etc.
+            processed_results.append(result)
+
+    return processed_results
 
 def search(query,company_name, report_type, top_k=5):
     """Search for top_k most relevant chunks in FAISS"""
@@ -48,8 +64,11 @@ def search(query,company_name, report_type, top_k=5):
 
     # Get the matching text chunks
     results = [text_chunks[idx] for idx in indices[0]]
+
+    # Process the results to extract meaningful insights
+    processed_results = process_results(results)
     
-    return results
+    return processed_results
 
 
 # Example Usage
