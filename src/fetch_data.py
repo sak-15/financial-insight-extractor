@@ -1,3 +1,5 @@
+# Import the required libraries
+
 import requests
 import os
 from bs4 import BeautifulSoup
@@ -7,18 +9,23 @@ from vector_store import store_embeddings
 from datetime import datetime
 warnings.filterwarnings("ignore")
 
+# Set the headers for the requests
 headers = {
     "User-Agent": "sakshi sakshi@gmail.com"
     }
 
+# User will be only knowing company name, so we need to fetch CIK, accession number and primary document from sec for company. 
+# So below is the function to fetch CIK, accession number and primary document
 def get_cik(company_name):
+    '''
+    Given a company name, fetch the CIK (Central Index Key) from the SEC API.
+    '''
     cik_url = "https://www.sec.gov/files/company_tickers.json"
     response = requests.get(cik_url, headers=headers)
 
     if response.status_code == 200:
         cik_data = response.json()
 
-        # ✅ Fix: JSON structure is { "1": {"cik_str": ..., "ticker": ..., "title": ...}, "2": {...} }
         for company in cik_data.values():  # Directly loop through values()
             if isinstance(company, dict) and "title" in company:
                 if company_name.lower() in company["title"].lower():
@@ -55,6 +62,8 @@ def get_latest_filing_details(cik, report_type="10-K"):
     print("No filing found!")
     return None, None
 
+
+# fetching the fillings from sec
 def fetch_filing_text(company_name, report_type):
     """
     Given a company's CIK, filing accession number, and primary document name,
@@ -91,7 +100,7 @@ def fetch_filing_text(company_name, report_type):
     else:
         print(f"Error fetching filing text: {response.status_code}")
 
-
+## Example input
 # company_name = "Amazon"
 # report_type = "10-K"
 
